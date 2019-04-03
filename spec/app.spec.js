@@ -31,5 +31,32 @@ describe("/", () => {
           });
       });
     });
+    describe("/articles", () => {
+      it("GET method to retrieve all the articles", () => {
+        return request
+          .get("/api/articles")
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles).to.be.an("array");
+          });
+      });
+      it("GET method to filter the articles by the username", () => {
+        return request
+          .get("/api/articles?author=butter_bridge")
+          .expect(200)
+          .then(res => {
+            console.log(res.body);
+            expect(res.body.articles[0].author).to.eql("butter_bridge");
+          });
+      });
+      it("GET method to filter the topic value specified by the query", () => {
+        return request
+          .get("/api/articles?topic=cats")
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles[0].topic).to.eql("cats");
+          });
+      });
+    });
   });
 });

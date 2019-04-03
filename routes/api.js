@@ -10,6 +10,6 @@ apiRouter
 
 apiRouter.use("/topics", topicsRouter);
 
-apiRouter.use("./articles", articlesRouter);
+apiRouter.use("/articles", articlesRouter);
 
 module.exports = apiRouter;

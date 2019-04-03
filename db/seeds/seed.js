@@ -28,7 +28,6 @@ exports.seed = (connection, Promise) => {
         .returning("*");
     })
     .then((articles, users) => {
-      //console.log(articles);
       return connection("comments")
         .insert(formatCommentData(commentsData, articles, users))
         .into("comments")

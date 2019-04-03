@@ -1,7 +1,8 @@
 const { getArticles } = require("../models/articles");
 
 exports.sendArticles = (req, res, next) => {
-  getArticles().then(article => {
+  const { author, topic } = req.query;
+  getArticles(author, topic).then(article => {
     res.status(200).send({ articles: article });
   });
 };
