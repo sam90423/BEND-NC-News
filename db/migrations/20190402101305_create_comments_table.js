@@ -4,13 +4,15 @@ exports.up = function(connection, Promise) {
     commentsTable
       .integer("article_id")
       .references("article_id")
-      .inTable("articles");
+      .inTable("articles")
+      .onDelete("CASCADE");
     commentsTable.string("body", 5000);
     commentsTable
       .string("author")
       .references("username")
       .inTable("users")
-      .notNullable();
+      .notNullable()
+      .onDelete("CASCADE");
     commentsTable.string("belongs_to");
     commentsTable.string("created_by");
     commentsTable.integer("votes").defaultTo(0);

@@ -39,3 +39,13 @@ exports.patchArticle = (article_id, newVotes) => {
     .increment({ votes: newVotes.inc_votes })
     .returning("*");
 };
+
+exports.deleteArticle = article_id => {
+  return connection("articles")
+    .where({ article_id })
+    .del();
+};
+
+exports.getCommentsById = article_id => {
+  return connection("comments").where({ article_id });
+};

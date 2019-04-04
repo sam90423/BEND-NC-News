@@ -125,15 +125,16 @@ describe("/", () => {
       });
       it("DELETE method to delete the given article", () => {
         return request
-          .delet("/api/articles/1")
+          .delete("/api/articles/1")
 
-          .expect(405)
+          .expect(204)
           .then(({ body }) => {
-            expect(body.msg).to.eql("Method not allowed");
+            console.log(body);
+            expect(body).to.eql({});
           });
       });
 
-      xit("GET method to return an array of the comments for a given id", () => {
+      it.only("GET method to return an array of the comments for a given id", () => {
         return request
           .get("/api/articles/1/comments")
           .expect(200)
