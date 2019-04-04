@@ -37,6 +37,7 @@ describe("/", () => {
           .get("/api/articles")
           .expect(200)
           .then(res => {
+            console.log(res.body.articles);
             expect(res.body.articles).to.be.an("array");
           });
       });
@@ -45,7 +46,6 @@ describe("/", () => {
           .get("/api/articles?author=butter_bridge")
           .expect(200)
           .then(res => {
-            console.log(res.body);
             expect(res.body.articles[0].author).to.eql("butter_bridge");
           });
       });
@@ -55,6 +55,91 @@ describe("/", () => {
           .expect(200)
           .then(res => {
             expect(res.body.articles[0].topic).to.eql("cats");
+          });
+      });
+      it("GET method to add a comment count to article_id", () => {
+        return request
+          .get("/api/articles")
+          .expect(200)
+          .then(res => {
+            console.log(res.body);
+            res.body.articles.forEach(article => {
+              expect(article).to.have.keys(
+                "author",
+                "title",
+                "article_id",
+                "topic",
+                "body",
+                "created_at",
+                "votes",
+                "comment_count"
+              );
+              expect(res.body.articles[0].comment_count).to.eql("13");
+            });
+          });
+      });
+      it("GET method to sort the articles by any valid column", () => {
+        return request
+          .get("/api/articles?sort_by=created_at")
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles[0].created_at).to.eql(
+              "2018-11-15T00:00:00.000Z"
+            );
+          });
+      });
+      it("GET method to sort the articles by any valid column", () => {
+        return request
+          .get("/api/articles?sort_by=created_at")
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles[0].created_at).to.eql(
+              "2018-11-15T00:00:00.000Z"
+            );
+          });
+      });
+      it("GET method to sort the articles by any valid column with non default values", () => {
+        return request
+          .get("/api/articles?sort_by=votes&&order=asc")
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles[0].votes).to.eql(0);
+          });
+      });
+      it("GET method to find the article by article_id", () => {
+        return request
+          .get("/api/articles/1")
+          .expect(200)
+          .then(res => {
+            expect(res.body.articles[0].article_id).to.eql(1);
+          });
+      });
+      it("PATCH method to increment or decrement the votes value", () => {
+        return request
+          .patch("/api/articles/1")
+          .send({ inc_votes: 2 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles.votes).to.eql(102);
+          });
+      });
+      it("DELETE method to delete the given article", () => {
+        return request
+          .delet("/api/articles/1")
+
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.eql("Method not allowed");
+          });
+      });
+
+      xit("GET method to return an array of the comments for a given id", () => {
+        return request
+          .get("/api/articles/1/comments")
+          .expect(200)
+          .then(res => {
+            console.log(res.body);
+            expect(res.body.articles[0].votes).to.eql(103);
           });
       });
     });

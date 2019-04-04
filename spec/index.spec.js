@@ -105,7 +105,6 @@ describe("testing formatCommentData", () => {
       {
         article_id: 13,
         body: "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam.",
-
         author: "grumpy19",
         votes: 7,
         created_at: "Thu, 10 Nov 2016 21:26:49 GMT"
