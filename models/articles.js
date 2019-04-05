@@ -8,8 +8,6 @@ exports.getArticles = ({
   article_id,
   newVotes
 }) => {
-  console.log(article_id, newVotes);
-  //console.log(newVotes.inc_votes);
   return connection
     .select("articles.*")
     .from("articles")
@@ -33,7 +31,6 @@ exports.getArticles = ({
 };
 
 exports.patchArticle = (article_id, newVotes) => {
-  console.log(newVotes);
   return connection("articles")
     .where({ article_id })
     .increment({ votes: newVotes.inc_votes })
@@ -51,7 +48,6 @@ exports.getCommentsById = article_id => {
 };
 
 exports.postComment = (article_id, newComment) => {
-  console.log(article_id, newComment.username);
   return connection("comments")
     .insert({
       article_id,

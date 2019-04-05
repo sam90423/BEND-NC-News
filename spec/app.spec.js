@@ -37,7 +37,6 @@ describe("/", () => {
           .get("/api/articles")
           .expect(200)
           .then(res => {
-            console.log(res.body.articles);
             expect(res.body.articles).to.be.an("array");
           });
       });
@@ -62,7 +61,6 @@ describe("/", () => {
           .get("/api/articles")
           .expect(200)
           .then(res => {
-            console.log(res.body);
             res.body.articles.forEach(article => {
               expect(article).to.have.keys(
                 "author",
@@ -129,7 +127,6 @@ describe("/", () => {
 
           .expect(204)
           .then(({ body }) => {
-            console.log(body);
             expect(body).to.eql({});
           });
       });
@@ -139,7 +136,6 @@ describe("/", () => {
           .get("/api/articles/1/comments")
           .expect(200)
           .then(res => {
-            console.log(res.body);
             expect(res.body.comments[0].article_id).to.eql(1);
           });
       });
@@ -152,7 +148,6 @@ describe("/", () => {
           })
           .expect(201)
           .then(({ body }) => {
-            console.log({ body });
             expect(body.comment).to.eql({
               comment_id: 19,
               article_id: 1,
@@ -172,6 +167,24 @@ describe("/", () => {
           .expect(200)
           .then(({ body }) => {
             expect(body.patchedComment.votes).to.eql(18);
+          });
+      });
+      it("DELETE method to delete the given comment", () => {
+        return request
+          .delete("/api/comments/1")
+          .expect(204)
+          .then(({ body }) => {
+            expect(body).to.eql({});
+          });
+      });
+    });
+    describe("/users", () => {
+      it("GET method to get a user by the given username", () => {
+        return request
+          .get("/api/users/butter_bridge")
+          .expect(200)
+          .then(res => {
+            expect(res.body[0].username).to.eql("butter_bridge");
           });
       });
     });
