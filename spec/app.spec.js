@@ -189,4 +189,38 @@ describe("/", () => {
       });
     });
   });
+  describe("Error handling tests", () => {
+    it("GET status 400 when testing a bad request for with a bad article_id", () => {
+      return request
+        .get("/api/articles/fghshe")
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.equal("Bad Request");
+        });
+    });
+    it("GET status 404 when testing a bad route", () => {
+      return request
+        .get("/api/fghshe")
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.equal("Route Not Found");
+        });
+    });
+    it.only("GET status 405 when testing for a bad method", () => {
+      return request
+        .post("/api/")
+        .expect(405)
+        .then(res => {
+          expect(res.body.msg).to.equal("Method Not Allowed");
+        });
+    });
+    xit("GET status 500 when its an internal server error", () => {
+      return request
+        .get("/api/90")
+        .expect(500)
+        .then(res => {
+          expect(res.body.msg).to.equal("Internal Server Error");
+        });
+    });
+  });
 });
