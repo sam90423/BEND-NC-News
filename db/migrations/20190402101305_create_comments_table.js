@@ -13,8 +13,6 @@ exports.up = function(connection, Promise) {
       .inTable("users")
       .notNullable()
       .onDelete("CASCADE");
-    commentsTable.string("belongs_to");
-    commentsTable.string("created_by");
     commentsTable.integer("votes").defaultTo(0);
     commentsTable.date("created_at").defaultTo(connection.fn.now());
   });

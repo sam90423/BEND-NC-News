@@ -49,3 +49,14 @@ exports.deleteArticle = article_id => {
 exports.getCommentsById = article_id => {
   return connection("comments").where({ article_id });
 };
+
+exports.postComment = (article_id, newComment) => {
+  console.log(article_id, newComment.username);
+  return connection("comments")
+    .insert({
+      article_id,
+      author: newComment.username,
+      body: newComment.body
+    })
+    .returning("*");
+};

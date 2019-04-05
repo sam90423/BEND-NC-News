@@ -134,13 +134,44 @@ describe("/", () => {
           });
       });
 
-      it.only("GET method to return an array of the comments for a given id", () => {
+      it("GET method to return an array of the comments for a given id", () => {
         return request
           .get("/api/articles/1/comments")
           .expect(200)
           .then(res => {
             console.log(res.body);
-            expect(res.body.articles[0].votes).to.eql(103);
+            expect(res.body.comments[0].article_id).to.eql(1);
+          });
+      });
+      it("POST method to post a comment", () => {
+        return request
+          .post("/api/articles/1/comments")
+          .send({
+            username: "butter_bridge",
+            body: "HELLOOOOOOooo"
+          })
+          .expect(201)
+          .then(({ body }) => {
+            console.log({ body });
+            expect(body.comment).to.eql({
+              comment_id: 19,
+              article_id: 1,
+              body: "HELLOOOOOOooo",
+              author: "butter_bridge",
+              votes: 0,
+              created_at: "2019-04-04T23:00:00.000Z"
+            });
+          });
+      });
+    });
+    describe("/comments", () => {
+      it("PATCH method to increment or decrement the votes value", () => {
+        return request
+          .patch("/api/comments/1")
+          .send({ inc_votes: 2 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.patchedComment.votes).to.eql(18);
           });
       });
     });

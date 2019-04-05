@@ -1,4 +1,5 @@
-exports.routeNotFound = (req, res) => {
+exports.routeNotFound = (err, req, res, next) => {
+  console.log(err);
   res.status(404).send({ msg: "Route Not Found" });
 };
 
