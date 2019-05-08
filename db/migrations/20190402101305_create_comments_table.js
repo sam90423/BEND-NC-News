@@ -6,7 +6,7 @@ exports.up = function(connection, Promise) {
       .references("article_id")
       .inTable("articles")
       .onDelete("CASCADE");
-    commentsTable.string("body", 5000);
+    commentsTable.string("body", 5000).notNullable();
     commentsTable
       .string("author")
       .references("username")
@@ -14,7 +14,7 @@ exports.up = function(connection, Promise) {
       .notNullable()
       .onDelete("CASCADE");
     commentsTable.integer("votes").defaultTo(0);
-    commentsTable.date("created_at").defaultTo(connection.fn.now());
+    commentsTable.timestamp("created_at").defaultTo(connection.fn.now(6));
   });
 };
 

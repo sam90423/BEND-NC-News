@@ -37,6 +37,7 @@ describe("/", () => {
           .get("/api/articles")
           .expect(200)
           .then(res => {
+            console.log(res.body);
             expect(res.body.articles).to.be.an("array");
           });
       });
@@ -86,16 +87,6 @@ describe("/", () => {
             );
           });
       });
-      it("GET method to sort the articles by any valid column", () => {
-        return request
-          .get("/api/articles?sort_by=created_at")
-          .expect(200)
-          .then(res => {
-            expect(res.body.articles[0].created_at).to.eql(
-              "2018-11-15T00:00:00.000Z"
-            );
-          });
-      });
       it("GET method to sort the articles by any valid column with non default values", () => {
         return request
           .get("/api/articles?sort_by=votes&&order=asc")
@@ -109,7 +100,8 @@ describe("/", () => {
           .get("/api/articles/1")
           .expect(200)
           .then(res => {
-            expect(res.body.articles[0].article_id).to.eql(1);
+            console.log(res.body);
+            expect(res.body.article.article_id).to.eql(1);
           });
       });
       it("PATCH method to increment or decrement the votes value", () => {
@@ -118,7 +110,7 @@ describe("/", () => {
           .send({ inc_votes: 2 })
           .expect(200)
           .then(({ body }) => {
-            expect(body.articles.votes).to.eql(102);
+            expect(body.article.votes).to.eql(102);
           });
       });
       it("DELETE method to delete the given article", () => {
@@ -131,12 +123,13 @@ describe("/", () => {
           });
       });
 
-      it("GET method to return an array of the comments for a given id", () => {
+      it("GET method to return the comments for a given id", () => {
         return request
           .get("/api/articles/1/comments")
           .expect(200)
           .then(res => {
-            expect(res.body.comments[0].article_id).to.eql(1);
+            console.log(res.body);
+            expect(res.body.comments.comment_id).to.eql(2);
           });
       });
       it("POST method to post a comment", () => {
@@ -150,11 +143,11 @@ describe("/", () => {
           .then(({ body }) => {
             expect(body.comment).to.eql({
               comment_id: 19,
-              article_id: 1,
               body: "HELLOOOOOOooo",
               author: "butter_bridge",
               votes: 0,
-              created_at: "2019-04-04T23:00:00.000Z"
+              created_at: Date.now()
+              //new date.now()
             });
           });
       });
@@ -166,7 +159,7 @@ describe("/", () => {
           .send({ inc_votes: 2 })
           .expect(200)
           .then(({ body }) => {
-            expect(body.patchedComment.votes).to.eql(18);
+            expect(body.comment.votes).to.eql(18);
           });
       });
       it("DELETE method to delete the given comment", () => {
@@ -184,7 +177,7 @@ describe("/", () => {
           .get("/api/users/butter_bridge")
           .expect(200)
           .then(res => {
-            expect(res.body[0].username).to.eql("butter_bridge");
+            expect(res.body.user.username).to.eql("butter_bridge");
           });
       });
     });
@@ -198,20 +191,40 @@ describe("/", () => {
           expect(res.body.msg).to.equal("Bad Request");
         });
     });
+    it("GET status 404 when imputing a valid article_id that does not exist", () => {
+      return request
+        .get("/api/articles/1000")
+        .expect(404)
+        .then(res => {
+          console.log(res.body);
+          expect(res.body.msg).to.equal("Route Not Found");
+        });
+    });
     it("GET status 404 when testing a bad route", () => {
       return request
         .get("/api/fghshe")
         .expect(404)
         .then(res => {
+          console.log(res.body);
           expect(res.body.msg).to.equal("Route Not Found");
         });
     });
-    it.only("GET status 405 when testing for a bad method", () => {
+    it("GET status 404 when testing for a bad route", () => {
       return request
         .post("/api/")
-        .expect(405)
+        .expect(404)
         .then(res => {
-          expect(res.body.msg).to.equal("Method Not Allowed");
+          console.log(res.body);
+          expect(res.body.msg).to.equal("Route Not Found");
+        });
+    });
+    it("GET status 404 when providing a non-existent topic", () => {
+      return request
+        .get("/api/articles?topic=not-a-topic")
+        .expect(404)
+        .then(res => {
+          console.log(res.body);
+          expect(res.body.msg).to.equal("Route Not Found");
         });
     });
     xit("GET status 500 when its an internal server error", () => {
@@ -220,6 +233,105 @@ describe("/", () => {
         .expect(500)
         .then(res => {
           expect(res.body.msg).to.equal("Internal Server Error");
+        });
+    });
+    it("GET status 404 when providing a non-existent author", () => {
+      return request
+        .get("/api/articles?author=not-an-author")
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.equal("Route Not Found");
+        });
+    });
+    it("GET status 404 when facing invalid sort queries", () => {
+      return request
+        .get("/api/articles?sort_by=not-a-column")
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.equal("Bad Request");
+        });
+    });
+    it("PATCH method for sending back the article unchanged after nothing is sent in the req.body", () => {
+      return request
+        .patch("/api/articles/1")
+        .send()
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article.votes).to.eql(100);
+        });
+    });
+    it.only("POST method sending 400 for posting a comment without the required columns", () => {
+      return request
+        .post("/api/articles/1/comments")
+        .send({
+          body: "butter_bridge"
+        })
+        .expect(400)
+        .then(res => {
+          expect(res.body.msg).to.eql("Bad Request");
+        });
+    });
+    it("PATCH method sending a 404 for a valid comment_id that doesn't exist", () => {
+      return request
+        .patch("/api/comments/1000")
+        .send({ inc_votes: 2 })
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.eql("Route Not Found");
+        });
+    });
+    it("GET method sending a 404", () => {
+      return request
+        .get("/api/users/not-a-username")
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.eql("Route Not Found");
+        });
+    });
+    it("POST method sending 404 for posting a comment with a valid article_id that doesn't exist", () => {
+      return request
+        .post("/api/articles/10000/comments")
+        .send({
+          username: "butter_bridge",
+          body: "This a nice comment"
+        })
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.eql("Route Not Found");
+        });
+    });
+    it("GET method sending a 404 when sending a valid article_id that does not exist", () => {
+      return request
+        .get("/api/articles/1000/comments")
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.eql("Route Not Found");
+        });
+    });
+    it("PATCH method sending a 404 when giving a valid article_id that doesn't exist", () => {
+      return request
+        .patch("/api/articles/1000")
+        .send({ inc_votes: 2 })
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.eql("Route Not Found");
+        });
+    });
+    it("DELETE method sending a 404 when giving a valid article_id that doesn't exist", () => {
+      return request
+        .delete("/api/articles/1000")
+
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.eql("Route Not Found");
+        });
+    });
+    it("DELETE method sending a 404 when given an valid comment_id that doesn't exist", () => {
+      return request
+        .delete("/api/comments/1000")
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).to.eql("Route Not Found");
         });
     });
   });
