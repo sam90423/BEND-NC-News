@@ -260,7 +260,7 @@ describe("/", () => {
           expect(body.article.votes).to.eql(100);
         });
     });
-    it.only("POST method sending 400 for posting a comment without the required columns", () => {
+    it("POST method sending 400 for posting a comment without the required columns", () => {
       return request
         .post("/api/articles/1/comments")
         .send({

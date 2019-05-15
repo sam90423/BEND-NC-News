@@ -13,16 +13,32 @@ const {
 exports.sendArticles = (req, res, next) => {
   const { author, topic, sort_by, order } = req.query;
 
+  // if (
+  //   [
+  //     !("article_id",
+  //     "title",
+  //     "topic",
+  //     "created_at",
+  //     "votes",
+  //     "comment_count",
+  //     "author")
+  //   ].includes(sort_by)
+  // )
+  //   return next({ code: 400 });
   if (
+    sort_by &&
     [
-      !("article_id",
+      "article_id",
       "title",
       "topic",
       "created_at",
       "votes",
       "comment_count",
-      "author")
-    ].includes(sort_by)
+      "author"
+    ].every(valCol => {
+      console.log(valCol);
+      Object.keys(sort_by).includes(valCol);
+    })
   )
     return next({ code: 400 });
 
