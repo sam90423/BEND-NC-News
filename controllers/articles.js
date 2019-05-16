@@ -178,10 +178,12 @@ exports.sendCommentsByArticleId = (req, res, next) => {
   Promise.all([checkArticleId(article_id)])
     .then(([article]) => {
       if (article.length === 0) return Promise.reject({ code: 404 });
-      else return getCommentsById({ article_id, sort_by, order });
+      else {
+        return getCommentsById({ article_id, sort_by, order });
+      }
     })
-    .then(([comments]) => {
-      console.log("hello");
+    .then(comments => {
+      console.log(comments);
       res.status(200).send({ comments: comments });
     })
     .catch(next);

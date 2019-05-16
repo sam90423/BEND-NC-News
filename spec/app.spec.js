@@ -1,4 +1,4 @@
-process.env.NODE_ENV = "test";
+process.env.NODE_ENV = "development";
 
 const { expect } = require("chai");
 const supertest = require("supertest");
@@ -57,12 +57,13 @@ describe("/", () => {
             expect(res.body.articles[0].topic).to.eql("cats");
           });
       });
-      it("GET method to add a comment count to article_id", () => {
+      it.only("GET method to add a comment count to article_id", () => {
         return request
           .get("/api/articles")
           .expect(200)
           .then(res => {
             res.body.articles.forEach(article => {
+              console.log(article);
               expect(article).to.have.keys(
                 "author",
                 "title",
@@ -123,9 +124,9 @@ describe("/", () => {
           });
       });
 
-      it("GET method to return the comments for a given id", () => {
+      it.only("GET method to return the comments for a given id", () => {
         return request
-          .get("/api/articles/1/comments")
+          .get("/api/articles/7/comments")
           .expect(200)
           .then(res => {
             console.log(res.body);

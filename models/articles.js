@@ -80,17 +80,9 @@ exports.getCommentsById = ({
   sort_by = "created_at",
   order = "desc"
 }) => {
-  return connection
-    .select(
-      "comments.comment_id",
-      "comments.votes",
-      "comments.created_at",
-      "comments.author",
-      "comments.body"
-    )
-    .from("comments")
-    .where("comments.article_id", article_id)
-    .orderBy(sort_by, order);
+  console.log(article_id);
+  return connection("comments").where("comments.article_id", article_id);
+  // .orderBy(sort_by, order);
 };
 
 exports.postComment = (article_id, newComment) => {
