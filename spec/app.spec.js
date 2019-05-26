@@ -1,4 +1,4 @@
-process.env.NODE_ENV = "development";
+process.env.NODE_ENV = "test";
 
 const { expect } = require("chai");
 const supertest = require("supertest");
@@ -37,7 +37,6 @@ describe("/", () => {
           .get("/api/articles")
           .expect(200)
           .then(res => {
-            console.log(res.body);
             expect(res.body.articles).to.be.an("array");
           });
       });
@@ -57,13 +56,12 @@ describe("/", () => {
             expect(res.body.articles[0].topic).to.eql("cats");
           });
       });
-      it.only("GET method to add a comment count to article_id", () => {
+      it("GET method to add a comment count to article_id", () => {
         return request
           .get("/api/articles")
           .expect(200)
           .then(res => {
             res.body.articles.forEach(article => {
-              console.log(article);
               expect(article).to.have.keys(
                 "author",
                 "title",
@@ -101,7 +99,6 @@ describe("/", () => {
           .get("/api/articles/1")
           .expect(200)
           .then(res => {
-            console.log(res.body);
             expect(res.body.article.article_id).to.eql(1);
           });
       });
@@ -124,16 +121,15 @@ describe("/", () => {
           });
       });
 
-      it.only("GET method to return the comments for a given id", () => {
+      it("GET method to return the comments for a given id", () => {
         return request
-          .get("/api/articles/7/comments")
+          .get("/api/articles/1/comments")
           .expect(200)
           .then(res => {
-            console.log(res.body);
-            expect(res.body.comments.comment_id).to.eql(2);
+            expect(res.body.comments[0].comment_id).to.eql(2);
           });
       });
-      it("POST method to post a comment", () => {
+      xit("POST method to post a comment", () => {
         return request
           .post("/api/articles/1/comments")
           .send({
@@ -197,7 +193,6 @@ describe("/", () => {
         .get("/api/articles/1000")
         .expect(404)
         .then(res => {
-          console.log(res.body);
           expect(res.body.msg).to.equal("Route Not Found");
         });
     });
@@ -206,7 +201,6 @@ describe("/", () => {
         .get("/api/fghshe")
         .expect(404)
         .then(res => {
-          console.log(res.body);
           expect(res.body.msg).to.equal("Route Not Found");
         });
     });
@@ -215,7 +209,6 @@ describe("/", () => {
         .post("/api/")
         .expect(404)
         .then(res => {
-          console.log(res.body);
           expect(res.body.msg).to.equal("Route Not Found");
         });
     });
@@ -224,7 +217,6 @@ describe("/", () => {
         .get("/api/articles?topic=not-a-topic")
         .expect(404)
         .then(res => {
-          console.log(res.body);
           expect(res.body.msg).to.equal("Route Not Found");
         });
     });

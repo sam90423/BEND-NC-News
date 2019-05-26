@@ -15,10 +15,8 @@ exports.getArticles = ({
     .orderBy(sort_by, order)
     .modify(query => {
       if (topic) {
-        console.log(topic);
         query.where("articles.topic", topic[0].slug);
       } else if (author) {
-        console.log(author);
         query.where("articles.author", author[0].username);
       }
     });
@@ -80,13 +78,12 @@ exports.getCommentsById = ({
   sort_by = "created_at",
   order = "desc"
 }) => {
-  console.log(article_id);
-  return connection("comments").where("comments.article_id", article_id);
-  // .orderBy(sort_by, order);
+  return connection("comments")
+    .where("comments.article_id", article_id)
+    .orderBy(sort_by, order);
 };
 
 exports.postComment = (article_id, newComment) => {
-  console.log(newComment, "hello");
   return connection("comments")
     .insert({
       article_id,

@@ -1,5 +1,4 @@
 exports.badRequest = (err, req, res, next) => {
-  // console.log(Object.keys(err));
   const badRequestCodes = ["22P02", "42703", "23502"];
   if (badRequestCodes.includes(err.code) || err.code === 400) {
     res.status(400).send({ msg: "Bad Request" });
@@ -19,6 +18,5 @@ exports.methodNotAllowed = (err, req, res, next) => {
 };
 
 exports.handle500 = (err, req, res, next) => {
-  console.log(err);
   res.status(500).send({ msg: "Internal Server Error" });
 };
