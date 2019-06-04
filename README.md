@@ -16,52 +16,28 @@ This is the back-end to my nc-news project where I created the end-points to man
 
 The end-points can be viewed in the routes folder.
 
-## Available Scripts
+## How to start
 
-Create development and test databases locally:
-
-```bash
-npm run setup-dbs
-```
-
-Create a new migration file:
+Clone the repo from github
 
 ```bash
-npm run migrate-make <filename>
+git clone https://github.com/sam90423/BEND-NC-News.git
 ```
 
-Run all migrations:
+Download the packages
 
 ```bash
-npm run migrate-latest
+npm install
 ```
 
-Rollback all migrations:
-
-```bash
-npm run migrate-rollback
-```
-
-Run tests:
-
-```bash
-npm test
-```
-
-Rollback, migrate -> latest, then start inserting data into the database:
-
-```bash
-npm run seed
-```
-
-Run the server with `nodemon`, for hot reload:
-
-```bash
-npm run dev
-```
-
-Run the server with `node`:
+Start the database locally
 
 ```bash
 npm start
+```
+
+Run the tests
+
+```bash
+npm test
 ```
